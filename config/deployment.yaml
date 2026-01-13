@@ -19,7 +19,7 @@ spec:
       serviceAccountName: workload-controller
       containers:
         - name: controller
-          image: zakisk/secret-service:latest
+          image: ko://github.com/openshift-pipelines/syncer-service/cmd/controller
           imagePullPolicy: Always
           env:
             - name: SYSTEM_NAMESPACE

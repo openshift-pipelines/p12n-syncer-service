@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/zakisk/secret-service/pkg/reconciler"
+	"github.com/openshift-pipelines/syncer-service/pkg/reconciler"
 
 	"knative.dev/pkg/injection/sharedmain"
 )
