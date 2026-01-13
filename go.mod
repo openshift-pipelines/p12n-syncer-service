@@ -1,4 +1,4 @@
-module github.com/zakisk/secret-service
+module github.com/openshift-pipelines/syncer-service
 
 go 1.24.0
 
