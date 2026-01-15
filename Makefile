@@ -1,6 +1,8 @@
 # Image URL to use all building/pushing image targets
-IMG ?=
+IMG ?= openshift-pipelines/syncer-service:latest
 REGISTRY ?=
+RELEASE_DIR ?= release
+VERSION ?= nightly
 
 # Get the currently used golang install path (in GOPATH/bin, unless GOBIN is set)
 ifeq (,$(shell go env GOBIN))
@@ -8,6 +10,39 @@ GOBIN=$(shell go env GOPATH)/bin
 else
 GOBIN=$(shell go env GOBIN)
 endif
+
+## Location to install dependencies to
+LOCALBIN ?= $(shell pwd)/bin
+$(LOCALBIN):
+	mkdir -p $(LOCALBIN)
+
+## Tool Binaries
+KUBECTL ?= kubectl
+KUSTOMIZE ?= $(LOCALBIN)/kustomize
+
+## Tool Versions
+KUSTOMIZE_VERSION ?= v5.5.0
+
+.PHONY: kustomize
+kustomize: $(KUSTOMIZE) ## Download kustomize locally if necessary.
+$(KUSTOMIZE): $(LOCALBIN)
+	$(call go-install-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v5,$(KUSTOMIZE_VERSION))
+
+# go-install-tool will 'go install' any package with custom target and name of binary, if it doesn't exist
+# $1 - target path with name of binary
+# $2 - package url which can be installed
+# $3 - specific version of package
+define go-install-tool
+@[ -f "$(1)-$(3)" ] || { \
+set -e; \
+package=$(2)@$(3) ;\
+echo "Downloading $${package}" ;\
+rm -f $(1) || true ;\
+GOBIN=$(LOCALBIN) go install $${package} ;\
+mv $(1) $(1)-$(3) ;\
+} ;\
+ln -sf $(1)-$(3) $(1)
+endef
 
 .PHONY: help
 help: ## Display this help.
@@ -107,3 +142,9 @@ quick-deploy: build docker-build deploy ## Quick local build and deploy (for dev
 
 .PHONY: update
 update: docker-build docker-push redeploy ## Build, push, and redeploy with new image.
+
+.PHONY: release
+release: kustomize
+	mkdir -p ${RELEASE_DIR}
+	cd config && $(KUSTOMIZE) edit set image controller=${IMG}
+	$(KUSTOMIZE) build config -o ${RELEASE_DIR}/release-${VERSION}.yaml

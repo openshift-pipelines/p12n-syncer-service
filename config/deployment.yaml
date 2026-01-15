@@ -19,7 +19,7 @@ spec:
       serviceAccountName: workload-controller
       containers:
         - name: controller
-          image: ko://github.com/openshift-pipelines/syncer-service/cmd/controller
+          image: controller:latest
           imagePullPolicy: Always
           env:
             - name: SYSTEM_NAMESPACE
