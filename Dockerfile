@@ -10,7 +10,7 @@ COPY go.mod go.sum ./
 COPY . .
 
 # Build the binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/workload-controller ./cmd/controller
+RUN go build -o bin/workload-controller ./cmd/controller
 
 # Final stage
 FROM gcr.io/distroless/static:nonroot
