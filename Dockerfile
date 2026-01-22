@@ -5,13 +5,12 @@ WORKDIR /workspace
 
 # Copy go mod files
 COPY go.mod go.sum ./
-RUN go mod download
 
 # Copy source code
 COPY . .
 
 # Build the binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o bin/workload-controller ./cmd/controller
+RUN go build -o bin/workload-controller ./cmd/controller
 
 # Final stage
 FROM gcr.io/distroless/static:nonroot
