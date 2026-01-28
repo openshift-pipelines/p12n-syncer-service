@@ -1,0 +1,37 @@
+ARG GO_BUILDER=brew.registry.redhat.io/rh-osbs/openshift-golang-builder:v1.24
+ARG RUNTIME=registry.redhat.io/ubi9/ubi-minimal@sha256:90bd85dcd061d1ad6dbda70a867c41958c04a86462d05c631f8205e8870f28f8
+
+FROM $GO_BUILDER AS builder
+
+WORKDIR /go/src/github.com/openshift-pipelines/syncer-service
+COPY . .
+ENV GODEBUG="http2server=0"
+ENV GOEXPERIMENT=strictfipsruntime
+RUN git rev-parse HEAD > /tmp/HEAD
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-X 'knative.dev/pkg/changeset.rev=$(cat /tmp/HEAD)'" -mod=vendor -tags disable_gcp,strictfipsruntime -v -o /tmp/workload-controller \
+    ./cmd/controller
+
+FROM $RUNTIME
+ARG VERSION=syncer-service-controller-main
+
+WORKDIR /
+
+# Copy the binary from builder stage
+COPY --from=builder /tmp/workload-controller /workload-controller
+
+LABEL \
+    com.redhat.component="openshift-pipelines-syncer-service-rhel9-container" \
+    name="openshift-pipelines/syncer-service-rhel9" \
+    version=$VERSION \
+    summary="Red Hat OpenShift Pipelines Syncer Service" \
+    maintainer="pipelines-extcomm@redhat.com" \
+    description="Red Hat OpenShift Pipelines Syncer Service" \
+    io.k8s.display-name="Red Hat OpenShift Pipelines Syncer Service" \
+    io.k8s.description="Red Hat OpenShift Pipelines Syncer Service" \
+    io.openshift.tags="pipelines,tekton,openshift"
+
+RUN microdnf install -y shadow-utils && \
+    groupadd -r -g 65532 nonroot && useradd --no-log-init -r -u 65532 -g nonroot nonroot
+USER 65532
+
+ENTRYPOINT ["/workload-controller"]
