@@ -4,7 +4,8 @@ ARG RUNTIME=registry.redhat.io/ubi9/ubi-minimal@sha256:90bd85dcd061d1ad6dbda70a8
 FROM $GO_BUILDER AS builder
 
 WORKDIR /go/src/github.com/openshift-pipelines/syncer-service
-COPY . .
+COPY upstream .
+RUN set -e; for f in patches/*.patch; do echo ${f}; [[ -f ${f} ]] || continue; git apply ${f}; done
 ENV GODEBUG="http2server=0"
 ENV GOEXPERIMENT=strictfipsruntime
 RUN git rev-parse HEAD > /tmp/HEAD
