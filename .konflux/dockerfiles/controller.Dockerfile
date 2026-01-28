@@ -8,7 +8,6 @@ COPY upstream .
 RUN set -e; for f in patches/*.patch; do echo ${f}; [[ -f ${f} ]] || continue; git apply ${f}; done
 ENV GODEBUG="http2server=0"
 ENV GOEXPERIMENT=strictfipsruntime
-RUN git rev-parse HEAD > /tmp/HEAD
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-X 'knative.dev/pkg/changeset.rev=$(cat /tmp/HEAD)'" -mod=vendor -tags disable_gcp,strictfipsruntime -v -o /tmp/workload-controller \
     ./cmd/controller
 
