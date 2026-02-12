@@ -20,15 +20,16 @@ WORKDIR /
 COPY --from=builder /tmp/workload-controller /workload-controller
 
 LABEL \
-    com.redhat.component="openshift-pipelines-syncer-service-rhel9-container" \
-    name="openshift-pipelines/syncer-service-rhel9" \
-    version=$VERSION \
-    summary="Red Hat OpenShift Pipelines Syncer Service" \
-    maintainer="pipelines-extcomm@redhat.com" \
-    description="Red Hat OpenShift Pipelines Syncer Service" \
-    io.k8s.display-name="Red Hat OpenShift Pipelines Syncer Service" \
-    io.k8s.description="Red Hat OpenShift Pipelines Syncer Service" \
-    io.openshift.tags="pipelines,tekton,openshift"
+      com.redhat.component="openshift-pipelines-syncer-service-controller-rhel9-container" \
+      cpe="cpe:/a:redhat:openshift_pipelines:1.22::el9" \
+      description="Red Hat OpenShift Pipelines syncer-service controller" \
+      io.k8s.description="Red Hat OpenShift Pipelines syncer-service controller" \
+      io.k8s.display-name="Red Hat OpenShift Pipelines syncer-service controller" \
+      io.openshift.tags="tekton,openshift,syncer-service,controller" \
+      maintainer="pipelines-extcomm@redhat.com" \
+      name="openshift-pipelines/pipelines-syncer-service-controller-rhel9" \
+      summary="Red Hat OpenShift Pipelines syncer-service controller" \
+      version="v1.22.0"
 
 RUN microdnf install -y shadow-utils && \
     groupadd -r -g 65532 nonroot && useradd --no-log-init -r -u 65532 -g nonroot nonroot
