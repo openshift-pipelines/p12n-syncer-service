@@ -12,14 +12,14 @@ metadata:
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
       == "release-v1.22.x" &&
       ("upstream/***".pathChanged() || ".konflux/patches/***".pathChanged() || ".konflux/rpms/***".pathChanged() ||
-      ".konflux/dockerfiles/controller.Dockerfile".pathChanged() ||
-      ".tekton/syncer-service-1-22-controller-push.yaml".pathChanged())
+      ".konflux/dockerfiles/syncer-service.Dockerfile".pathChanged() ||
+      ".tekton/syncer-service-1-22-syncer-service-push.yaml".pathChanged())
   creationTimestamp: null
   labels:
     appstudio.openshift.io/application: openshift-pipelines-core-1-22
-    appstudio.openshift.io/component: syncer-service-1-22-controller
+    appstudio.openshift.io/component: syncer-service-1-22-syncer-service
     pipelines.appstudio.openshift.io/type: build
-  name: syncer-service-1-22-controller-on-push
+  name: syncer-service-1-22-syncer-service-on-push
   namespace: tekton-ecosystem-tenant
 spec:
   params:
@@ -30,9 +30,9 @@ spec:
   - name: revision
     value: '{{revision}}'
   - name: output-image
-    value: quay.io/redhat-user-workloads/tekton-ecosystem-tenant/pipelines-syncer-service-controller-rhel9:{{revision}}
+    value: quay.io/redhat-user-workloads/tekton-ecosystem-tenant/pipelines-syncer-service-rhel9:{{revision}}
   - name: dockerfile
-    value: .konflux/dockerfiles/controller.Dockerfile
+    value: .konflux/dockerfiles/syncer-service.Dockerfile
   - name: additional-tags
     value:
       - "v1.22.0"
@@ -42,7 +42,7 @@ spec:
   pipelineRef:
     name: docker-build-ta
   taskRunTemplate:
-    serviceAccountName: build-pipeline-syncer-service-1-22-controller
+    serviceAccountName: build-pipeline-syncer-service-1-22-syncer-service
   workspaces:
   - name: git-auth
     secret:
