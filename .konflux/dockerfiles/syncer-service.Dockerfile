@@ -1,4 +1,4 @@
-ARG GO_BUILDER=registry.access.redhat.com/ubi9/go-toolset:9.7-1772454089@sha256:b3b98e0b21ddbb979d968ca319b8eebdca121e30d58994072cbf99ce86e5d24e
+ARG GO_BUILDER=registry.access.redhat.com/ubi9/go-toolset:1.25
 ARG RUNTIME=registry.redhat.io/ubi9/ubi-minimal@sha256:c7d44146f826037f6873d99da479299b889473492d3c1ab8af86f08af04ec8a0
 
 FROM $GO_BUILDER AS builder
@@ -19,16 +19,16 @@ WORKDIR /
 COPY --from=builder /tmp/workload-controller /workload-controller
 
 LABEL \
-      com.redhat.component="openshift-pipelines-syncer-service-rhel9-container" \
-      cpe="cpe:/a:redhat:openshift_pipelines:next::el9" \
-      description="Red Hat OpenShift Pipelines syncer-service syncer-service" \
-      io.k8s.description="Red Hat OpenShift Pipelines syncer-service syncer-service" \
-      io.k8s.display-name="Red Hat OpenShift Pipelines syncer-service syncer-service" \
-      io.openshift.tags="tekton,openshift,syncer-service,syncer-service" \
-      maintainer="pipelines-extcomm@redhat.com" \
-      name="openshift-pipelines/pipelines-syncer-service-rhel9" \
-      summary="Red Hat OpenShift Pipelines syncer-service syncer-service" \
-      version="next"
+    com.redhat.component="openshift-pipelines-syncer-service-rhel9-container" \
+    cpe="cpe:/a:redhat:openshift_pipelines:next::el9" \
+    description="Red Hat OpenShift Pipelines syncer-service syncer-service" \
+    io.k8s.description="Red Hat OpenShift Pipelines syncer-service syncer-service" \
+    io.k8s.display-name="Red Hat OpenShift Pipelines syncer-service syncer-service" \
+    io.openshift.tags="tekton,openshift,syncer-service,syncer-service" \
+    maintainer="pipelines-extcomm@redhat.com" \
+    name="openshift-pipelines/pipelines-syncer-service-rhel9" \
+    summary="Red Hat OpenShift Pipelines syncer-service syncer-service" \
+    version="next"
 
 RUN microdnf install -y shadow-utils && \
     groupadd -r -g 65532 nonroot && useradd --no-log-init -r -u 65532 -g nonroot nonroot
