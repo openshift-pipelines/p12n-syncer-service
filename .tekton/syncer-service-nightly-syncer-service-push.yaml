@@ -10,16 +10,16 @@ metadata:
     build.appstudio.redhat.com/target_branch: '{{target_branch}}'
     pipelinesascode.tekton.dev/max-keep-runs: "3"
     pipelinesascode.tekton.dev/on-cel-expression: event == "push" && target_branch
-      == "next" &&
+      == "nightly" &&
       ("upstream/***".pathChanged() || ".konflux/patches/***".pathChanged() || ".konflux/rpms/***".pathChanged() ||
       ".konflux/dockerfiles/syncer-service.Dockerfile".pathChanged() ||
-      ".tekton/syncer-service-next-syncer-service-push.yaml".pathChanged())
+      ".tekton/syncer-service-nightly-syncer-service-push.yaml".pathChanged())
   creationTimestamp: null
   labels:
-    appstudio.openshift.io/application: openshift-pipelines-core-next
-    appstudio.openshift.io/component: syncer-service-next-syncer-service
+    appstudio.openshift.io/application: openshift-pipelines-core-nightly
+    appstudio.openshift.io/component: syncer-service-nightly-syncer-service
     pipelines.appstudio.openshift.io/type: build
-  name: syncer-service-next-syncer-service-on-push
+  name: syncer-service-nightly-syncer-service-on-push
   namespace: tekton-ecosystem-tenant
 spec:
   params:
@@ -35,14 +35,14 @@ spec:
     value: .konflux/dockerfiles/syncer-service.Dockerfile
   - name: additional-tags
     value:
-      - "next"
+      - "vlatest"
   - name: prefetch-input
     value: |
       {"type": "rpm", "path": ".konflux/rpms"}
   pipelineRef:
     name: docker-build-ta
   taskRunTemplate:
-    serviceAccountName: build-pipeline-syncer-service-next-syncer-service
+    serviceAccountName: build-pipeline-syncer-service-nightly-syncer-service
   workspaces:
   - name: git-auth
     secret:
