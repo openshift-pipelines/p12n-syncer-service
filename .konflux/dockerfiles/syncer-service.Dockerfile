@@ -28,7 +28,7 @@ LABEL \
     maintainer="pipelines-extcomm@redhat.com" \
     name="openshift-pipelines/pipelines-syncer-service-rhel9" \
     summary="Red Hat OpenShift Pipelines syncer-service syncer-service" \
-    version="v1.21.1"
+    version="v1.21.2"
 
 RUN microdnf install -y shadow-utils && \
     groupadd -r -g 65532 nonroot && useradd --no-log-init -r -u 65532 -g nonroot nonroot
