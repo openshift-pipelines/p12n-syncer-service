@@ -1,4 +1,4 @@
-ARG GO_BUILDER=registry.access.redhat.com/ubi9/go-toolset:latest@sha256:5e68f09a652ac6627a83c57655e42e24575efb278b54336039c9308607fc6b21
+ARG GO_BUILDER=registry.access.redhat.com/ubi9/go-toolset:1.25
 ARG RUNTIME=registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 FROM $GO_BUILDER AS builder
@@ -20,7 +20,7 @@ COPY --from=builder /tmp/workload-controller /workload-controller
 
 LABEL \
     com.redhat.component="openshift-pipelines-syncer-service-rhel9-container" \
-    cpe="cpe:/a:redhat:openshift_pipelines:next::" \
+    cpe="cpe:/a:redhat:openshift_pipelines:1.15::el9" \
     description="Red Hat OpenShift Pipelines syncer-service syncer-service" \
     io.k8s.description="Red Hat OpenShift Pipelines syncer-service syncer-service" \
     io.k8s.display-name="Red Hat OpenShift Pipelines syncer-service syncer-service" \
@@ -28,7 +28,7 @@ LABEL \
     maintainer="pipelines-extcomm@redhat.com" \
     name="openshift-pipelines/pipelines-syncer-service-rhel9" \
     summary="Red Hat OpenShift Pipelines syncer-service syncer-service" \
-    version="next"
+    version="v1.15.5"
 
 RUN microdnf install -y shadow-utils && \
     groupadd -r -g 65532 nonroot && useradd --no-log-init -r -u 65532 -g nonroot nonroot
