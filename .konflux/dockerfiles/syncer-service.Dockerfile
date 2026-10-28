@@ -1,5 +1,5 @@
 ARG GO_BUILDER=registry.access.redhat.com/ubi10/go-toolset:latest@sha256:be70aa468168f1ecd46e56d5f362e697243bcf9d3a2d98819597e43471a5d0e4
-ARG RUNTIME=registry.access.redhat.com/ubi9/ubi-minimal:latest
+ARG UBI_RUNTIME=registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 FROM $GO_BUILDER AS builder
 
@@ -11,7 +11,7 @@ ENV GOEXPERIMENT=strictfipsruntime
 RUN CGO_ENABLED=1 go build -ldflags="-X 'knative.dev/pkg/changeset.rev=$(cat /tmp/HEAD)'" -mod=vendor -tags disable_gcp,strictfipsruntime -v -o /tmp/workload-controller \
     ./cmd/controller
 
-FROM $RUNTIME
+FROM $UBI_RUNTIME
 
 WORKDIR /
 
