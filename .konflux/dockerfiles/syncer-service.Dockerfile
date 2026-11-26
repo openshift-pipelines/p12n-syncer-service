@@ -5,10 +5,11 @@ FROM $GO_BUILDER AS builder
 
 WORKDIR /go/src/github.com/openshift-pipelines/syncer-service
 COPY upstream .
+COPY head /tmp/HEAD
 RUN set -e; for f in patches/*.patch; do echo ${f}; [[ -f ${f} ]] || continue; git apply ${f}; done
 ENV GODEBUG="http2server=0"
 ENV GOEXPERIMENT=strictfipsruntime
-RUN CGO_ENABLED=1 go build -ldflags="-X 'knative.dev/pkg/changeset.rev=$(cat /tmp/HEAD)'" -mod=vendor -tags disable_gcp,strictfipsruntime -v -o /tmp/workload-controller \
+RUN CGO_ENABLED=1 go build -ldflags="-X 'knative.dev/pkg/changeset.rev=$(cat /tmp/HEAD)'" -mod=vendor -tags disable_gcp,strictfipsruntime,http2legacy -v -o /tmp/workload-controller \
     ./cmd/controller
 
 FROM $UBI_RUNTIME
